@@ -12,6 +12,7 @@ document.getElementById("routeForm").addEventListener("submit", async (e) => {
 
   const startCity = document.getElementById("startCity").value;
   const endCity = document.getElementById("endCity").value;
+  const autonomy = 300; // TODO: récupérer l'autonomie du véhicule
 
   try {
     const response = await fetch(
@@ -22,52 +23,64 @@ document.getElementById("routeForm").addEventListener("submit", async (e) => {
     if (!response.ok)
       throw new Error("Erreur lors de la récupération de l'itinéraire.");
 
-    const { route, startCoords, endCoords } = await response.json();
+    const { route, startCoords, endCoords, chargingStations } =
+      await response.json();
 
-    L.geoJSON(route, { color: "blue" }).addTo(map);
-    L.marker([startCoords.lat, startCoords.lon])
+    // Supprimer les anciennes couches (itinéraires et bornes précédentes)
+    map.eachLayer((layer) => {
+      if (!!layer.toGeoJSON) {
+        map.removeLayer(layer);
+      }
+    });
+
+    // 1️⃣ Afficher l'itinéraire
+    const routeLayer = L.geoJSON(
+      {
+        type: "LineString",
+        coordinates: route,
+      },
+      { color: "blue" }
+    ).addTo(map);
+
+    // 2️⃣ Ajouter les marqueurs de départ et d’arrivée
+    L.marker([startCoords[1], startCoords[0]])
       .addTo(map)
       .bindPopup(`Départ : ${startCity}`);
-    L.marker([endCoords.lat, endCoords.lon])
+
+    L.marker([endCoords[1], endCoords[0]])
       .addTo(map)
       .bindPopup(`Arrivée : ${endCity}`);
 
-    const bounds = L.geoJSON(route).getBounds();
-    map.fitBounds(bounds);
-  } catch (error) {
-    alert(`Erreur : ${error.message}`);
-  }
-});
-
-// Fonction pour récupérer les bornes de recharge
-async function fetchStations() {
-  try {
-    const response = await fetch("http://localhost:3001/api/stations"); // API Backend
-    const stations = await response.json();
-
-    console.log("Bornes récupérées :", stations); // Vérifie si on reçoit bien les bornes
-
-    // Ajouter les bornes sur la carte avec des icônes personnalisées
-    stations.forEach((station) => {
-      // if (station.coordonnees) {
-      const lat = station.ylatitude;
-      const lon = station.xlongitude;
-      console.log("Ajout de la borne sur la carte :", lat, lon); // Vérifie les coordonnées
-
+    // 3️⃣ Afficher les bornes nécessaires
+    chargingStations.forEach((station) => {
+      const [lat, lon] = station.coordonnees;
       L.marker([lat, lon], {
         icon: L.icon({
-          iconUrl: "assets/charging-station.png", // Icône personnalisée
+          iconUrl: "assets/charging-station.png",
           iconSize: [32, 32],
         }),
       })
         .addTo(map)
         .bindPopup(`<b>${station.nom}</b><br>${station.adresse}`);
-      // }
     });
+
+    // 4️⃣ Ajuster la carte à l'itinéraire
+    map.fitBounds(routeLayer.getBounds());
+
+    // L.geoJSON(route, { color: "blue" }).addTo(map);
+    // L.marker([startCoords.lat, startCoords.lon])
+    //   .addTo(map)
+    //   .bindPopup(`Départ : ${startCity}`);
+    // L.marker([endCoords.lat, endCoords.lon])
+    //   .addTo(map)
+    //   .bindPopup(`Arrivée : ${endCity}`);
+
+    // const bounds = L.geoJSON(route).getBounds();
+    // map.fitBounds(bounds);
   } catch (error) {
-    console.error("Erreur lors de la récupération des stations :", error);
+    alert(`Erreur : ${error.message}`);
   }
-}
+});
 
 const proxyUrl = "http://localhost:3001/api/vehicles/image?url=";
 
@@ -125,5 +138,4 @@ async function fetchVehicles() {
 }
 
 // Charger les données au démarrage
-fetchStations();
 fetchVehicles();
