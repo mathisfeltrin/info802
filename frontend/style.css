@@ -1,0 +1,40 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  margin: 20px 0;
+}
+
+#map {
+  height: 80vh;
+  width: 90%;
+  margin: auto;
+  border: 2px solid #333;
+  border-radius: 8px;
+}
+
+.vehicle-item img {
+  width: 80px;
+  height: auto;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+.vehicle-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.vehicle-details {
+  flex: 1;
+  text-align: left;
+}
