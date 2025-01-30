@@ -73,41 +73,54 @@ const proxyUrl = "http://localhost:3001/api/vehicles/image?url=";
 
 // Fonction pour récupérer les véhicules électriques
 async function fetchVehicles() {
+  const vehicleContainer = document.getElementById("vehicleContainer");
+  vehicleContainer.innerHTML = "<p>Chargement des véhicules...</p>";
+
   try {
     const response = await fetch("http://localhost:3001/api/vehicles");
     const vehicles = await response.json();
-    const vehicleList = document.getElementById("vehicleList");
 
-    vehicleList.innerHTML = ""; // Nettoyer la liste avant d'ajouter des véhicules
+    if (!vehicles.length) {
+      vehicleContainer.innerHTML = "<p>Aucun véhicule trouvé.</p>";
+      return;
+    }
+
+    // Générer une liste ul > li pour afficher les données
+    const list = document.createElement("ul");
+    list.classList.add("vehicle-list");
+
+    // vehicleList.innerHTML = ""; // Nettoyer la liste avant d'ajouter des véhicules
 
     vehicles.forEach((vehicle) => {
       const imageUrl =
         proxyUrl + encodeURIComponent(vehicle.media.image.thumbnail_url);
 
-      const vehicleItem = document.createElement("li");
-      vehicleItem.classList.add("vehicle-item");
+      const listItem = document.createElement("li");
+      listItem.classList.add("vehicle-item");
 
-      vehicleItem.innerHTML = `
-                <img src="${imageUrl}" alt="${vehicle.naming.make} ${
+      listItem.innerHTML = `
+          <img src="${imageUrl}" alt="${
         vehicle.naming.model
       }" class="vehicle-image">
-                <div class="vehicle-details">
-                    <strong>${vehicle.naming.make} ${
-        vehicle.naming.model
-      }</strong>
-                    <p>Autonomie : ${
-                      vehicle.range.chargetrip_range.worst
-                    } km</p>
-                    <p>Temps de charge : ${
-                      vehicle.connectors[0]?.time || "N/A"
-                    } min</p>
-                </div>
-            `;
+          <div class="vehicle-details">
+            <strong>${vehicle.naming.make} ${vehicle.naming.model}</strong><br>
+            Version : ${vehicle.naming.chargetrip_version || "N/A"}<br>
+            Autonomie (km) : ${
+              vehicle.range.chargetrip_range.worst || "N/A"
+            }<br>
+            Temps de charge : ${vehicle.connectors[0]?.time || "N/A"} min
+          </div>
+        `;
 
-      vehicleList.appendChild(vehicleItem);
+      list.appendChild(listItem);
     });
+
+    vehicleContainer.innerHTML = "";
+    vehicleContainer.appendChild(list);
   } catch (error) {
     console.error("Erreur lors de la récupération des véhicules :", error);
+    vehicleContainer.innerHTML =
+      "<p>Une erreur est survenue lors du chargement des véhicules.</p>";
   }
 }
 

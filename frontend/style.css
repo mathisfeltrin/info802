@@ -1,40 +1,195 @@
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
+/* Reset du style par défaut */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-h1 {
-  margin: 20px 0;
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
 }
 
-#map {
-  height: 80vh;
-  width: 90%;
-  margin: auto;
-  border: 2px solid #333;
-  border-radius: 8px;
+/* Bannière */
+.banner {
+  background-color: #4158d0;
+  background-image: linear-gradient(
+    43deg,
+    #4158d0 0%,
+    #c850c0 46%,
+    #ffcc70 100%
+  );
+
+  color: white;
+  padding: 20px;
+  width: 100%;
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.vehicle-item img {
-  width: 80px;
-  height: auto;
-  margin-right: 10px;
-  border-radius: 5px;
+/* Contenu principal */
+main {
+  width: 100%;
+  /* max-width: 1200px;
+  margin: 20px auto; */
+  text-align: center;
+}
+
+/* Positionnement du formulaire */
+#routeForm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  /* background: rgb(131, 58, 180);
+  background: linear-gradient(
+    45deg,
+    rgba(131, 58, 180, 1) 0%,
+    rgba(253, 29, 29, 1) 50%,
+    rgba(252, 176, 69, 1) 100%
+  ); */
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  z-index: 1000;
+  gap: 20px;
+}
+
+#vehicleContainer {
+  display: flex;
+  flex-direction: column; /* S'assurer que les éléments sont empilés verticalement */
+  align-items: flex-start; /* Alignement des éléments au début */
+  justify-content: flex-start; /* Pas d'espacement entre les éléments */
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  height: 50vh; /* Hauteur fixe */
+  width: 30%; /* Largeur ajustée */
+  background-color: white;
+  /* background: rgb(131, 58, 180);
+  background: linear-gradient(
+    45deg,
+    rgba(131, 58, 180, 1) 0%,
+    rgba(253, 29, 29, 1) 50%,
+    rgba(252, 176, 69, 1) 100%
+  ); */
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  z-index: 1000;
+  overflow-y: auto; /* Permet le défilement vertical */
+}
+
+.vehicle-list {
+  list-style-type: none; /* Supprime les puces */
+  padding: 10px;
+  margin: 0;
+  width: 100%; /* S'assurer que la liste utilise toute la largeur */
 }
 
 .vehicle-item {
   display: flex;
   align-items: center;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #fff;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  background-color: #eee;
+  width: 100%; /* Élargir les items */
+  box-sizing: border-box; /* Inclure les bordures et le padding */
+}
+
+.vehicle-item:last-child {
+  margin-bottom: 0; /* Supprime le margin-bottom pour le dernier élément */
+}
+
+.vehicle-image {
+  width: 100px;
+  margin-right: 15px;
+  border-radius: 5px;
 }
 
 .vehicle-details {
-  flex: 1;
+  flex: 1; /* Permet de remplir l'espace disponible */
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Réduction de la taille des champs et alignement */
+#label {
+  display: flex;
+  gap: 15px;
+}
+
+#startLabel,
+#endLabel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+label {
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #444;
   text-align: left;
+}
+
+input {
+  width: 100%; /* Champs ajustés pour le conteneur */
+  padding: 10px;
+  font-size: 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: border 0.3s ease;
+}
+
+input:focus {
+  border-color: #4facfe;
+  outline: none;
+}
+
+button {
+  width: auto;
+  padding: 10px;
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+}
+
+/* Carte occupant tout l'espace disponible */
+#map {
+  width: 100%;
+  height: 100vh;
+  position: relative; /* Permet au formulaire de se positionner dessus */
+  border-radius: 0; /* Suppression des coins arrondis pour un plein écran */
+  margin: 0;
+  box-shadow: none;
+}
+
+/* Ajout d'une transition douce pour les éléments */
+form,
+#map {
+  transition: all 0.3s ease;
 }
