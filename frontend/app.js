@@ -54,20 +54,22 @@ document.getElementById("routeForm").addEventListener("submit", async (e) => {
     // 3️⃣ Afficher les bornes nécessaires
     console.log("🔍 Liste des bornes envoyées au frontend :");
     chargingStations.forEach((station, index) => {
-      console.log(
-        `📌 Borne ${index + 1} : ${station.nom} - Coordonnées : ${
-          station.coordonnees
-        }`
-      );
-      const [lat, lon] = station.coordonnees;
-      L.marker([lat, lon], {
-        icon: L.icon({
-          iconUrl: "assets/charging-station.png",
-          iconSize: [32, 32],
-        }),
-      })
-        .addTo(map)
-        .bindPopup(`<b>${station.nom}</b><br>${station.adresse}`);
+      if (index != 0) {
+        console.log(
+          `📌 Borne ${index + 1} : ${station.nom} - Coordonnées : ${
+            station.coordonnees
+          }`
+        );
+        const [lat, lon] = station.coordonnees;
+        L.marker([lat, lon], {
+          icon: L.icon({
+            iconUrl: "assets/charging-station.png",
+            iconSize: [32, 32],
+          }),
+        })
+          .addTo(map)
+          .bindPopup(`<b>${station.nom}</b><br>${station.adresse}`);
+      }
     });
 
     // 4️⃣ Ajuster la carte à l'itinéraire
