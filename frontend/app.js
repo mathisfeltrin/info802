@@ -18,7 +18,7 @@ document.getElementById("routeForm").addEventListener("submit", async (e) => {
     const response = await fetch(
       `http://localhost:3001/api/map/route?startCity=${encodeURIComponent(
         startCity
-      )}&endCity=${encodeURIComponent(endCity)}`
+      )}&endCity=${encodeURIComponent(endCity)}&autonomy=${autonomy}`
     );
     if (!response.ok)
       throw new Error("Erreur lors de la récupération de l'itinéraire.");
@@ -28,7 +28,7 @@ document.getElementById("routeForm").addEventListener("submit", async (e) => {
 
     // Supprimer les anciennes couches (itinéraires et bornes précédentes)
     map.eachLayer((layer) => {
-      if (!!layer.toGeoJSON) {
+      if (!!layer.toGeoJSON || layer instanceof L.Marker) {
         map.removeLayer(layer);
       }
     });
@@ -52,7 +52,13 @@ document.getElementById("routeForm").addEventListener("submit", async (e) => {
       .bindPopup(`Arrivée : ${endCity}`);
 
     // 3️⃣ Afficher les bornes nécessaires
-    chargingStations.forEach((station) => {
+    console.log("🔍 Liste des bornes envoyées au frontend :");
+    chargingStations.forEach((station, index) => {
+      console.log(
+        `📌 Borne ${index + 1} : ${station.nom} - Coordonnées : ${
+          station.coordonnees
+        }`
+      );
       const [lat, lon] = station.coordonnees;
       L.marker([lat, lon], {
         icon: L.icon({

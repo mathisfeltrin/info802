@@ -16,25 +16,6 @@ body {
   margin: 0;
 }
 
-/* Bannière */
-.banner {
-  background-color: #4158d0;
-  background-image: linear-gradient(
-    43deg,
-    #4158d0 0%,
-    #c850c0 46%,
-    #ffcc70 100%
-  );
-
-  color: white;
-  padding: 20px;
-  width: 100%;
-  text-align: center;
-  font-size: 2.2rem;
-  font-weight: bold;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
 /* Contenu principal */
 main {
   width: 100%;
