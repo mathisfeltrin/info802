@@ -6,13 +6,14 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
 }).addTo(map);
 
+let autonomy = 300; // TODO: récupérer l'autonomie du véhicule
+
 // Fonction pour récupérer et afficher un itinéraire entre deux villes
 document.getElementById("routeForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const startCity = document.getElementById("startCity").value;
   const endCity = document.getElementById("endCity").value;
-  const autonomy = 300; // TODO: récupérer l'autonomie du véhicule
 
   try {
     const response = await fetch(
@@ -132,6 +133,12 @@ async function fetchVehicles() {
             Temps de charge : ${vehicle.connectors[0]?.time || "N/A"} min
           </div>
         `;
+
+      listItem.addEventListener("click", () => {
+        console.log("autonomy avant :", autonomy);
+        autonomy = vehicle.range.chargetrip_range.worst;
+        console.log("autonomy après :", autonomy);
+      });
 
       list.appendChild(listItem);
     });
