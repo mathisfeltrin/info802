@@ -57,9 +57,7 @@ document.getElementById("routeForm").addEventListener("submit", async (e) => {
     chargingStations.forEach((station, index) => {
       if (index != 0) {
         console.log(
-          `📌 Borne ${index + 1} : ${station.nom} - Coordonnées : ${
-            station.coordonnees
-          }`
+          `📌 Borne ${index} : ${station.nom} - Coordonnées : ${station.coordonnees}`
         );
         const [lat, lon] = station.coordonnees;
         L.marker([lat, lon], {
