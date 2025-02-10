@@ -6,13 +6,14 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
 }).addTo(map);
 
+let autonomy = 300; // TODO: récupérer l'autonomie du véhicule
+
 // Fonction pour récupérer et afficher un itinéraire entre deux villes
 document.getElementById("routeForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const startCity = document.getElementById("startCity").value;
   const endCity = document.getElementById("endCity").value;
-  const autonomy = 300; // TODO: récupérer l'autonomie du véhicule
 
   try {
     const response = await fetch(
@@ -54,20 +55,20 @@ document.getElementById("routeForm").addEventListener("submit", async (e) => {
     // 3️⃣ Afficher les bornes nécessaires
     console.log("🔍 Liste des bornes envoyées au frontend :");
     chargingStations.forEach((station, index) => {
-      console.log(
-        `📌 Borne ${index + 1} : ${station.nom} - Coordonnées : ${
-          station.coordonnees
-        }`
-      );
-      const [lat, lon] = station.coordonnees;
-      L.marker([lat, lon], {
-        icon: L.icon({
-          iconUrl: "assets/charging-station.png",
-          iconSize: [32, 32],
-        }),
-      })
-        .addTo(map)
-        .bindPopup(`<b>${station.nom}</b><br>${station.adresse}`);
+      if (index != 0) {
+        console.log(
+          `📌 Borne ${index} : ${station.nom} - Coordonnées : ${station.coordonnees}`
+        );
+        const [lat, lon] = station.coordonnees;
+        L.marker([lat, lon], {
+          icon: L.icon({
+            iconUrl: "assets/charging-station.png",
+            iconSize: [32, 32],
+          }),
+        })
+          .addTo(map)
+          .bindPopup(`<b>${station.nom}</b><br>${station.adresse}`);
+      }
     });
 
     // 4️⃣ Ajuster la carte à l'itinéraire
@@ -130,6 +131,12 @@ async function fetchVehicles() {
             Temps de charge : ${vehicle.connectors[0]?.time || "N/A"} min
           </div>
         `;
+
+      listItem.addEventListener("click", () => {
+        console.log("autonomy avant :", autonomy);
+        autonomy = vehicle.range.chargetrip_range.worst;
+        console.log("autonomy après :", autonomy);
+      });
 
       list.appendChild(listItem);
     });
