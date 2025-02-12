@@ -1,4 +1,0 @@
-{
-  "appService.defaultWebAppToDeploy": "undefined/subscriptions/49b312a3-0ae0-4c72-b3a6-4ff436568ef2/resourceGroups/info802/providers/Microsoft.Web/sites/electricTravel",
-  "appService.deploySubpath": "."
-}
