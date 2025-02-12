@@ -17,7 +17,7 @@ document.getElementById("routeForm").addEventListener("submit", async (e) => {
 
   try {
     const response = await fetch(
-      `http://localhost:3001/api/map/route?startCity=${encodeURIComponent(
+      `https://electrictravel.azurewebsites.net/api/map/route?startCity=${encodeURIComponent(
         startCity
       )}&endCity=${encodeURIComponent(endCity)}&autonomy=${autonomy}`
     );
@@ -89,7 +89,8 @@ document.getElementById("routeForm").addEventListener("submit", async (e) => {
   }
 });
 
-const proxyUrl = "http://localhost:3001/api/vehicles/image?url=";
+const proxyUrl =
+  "https://electrictravel.azurewebsites.net/api/vehicles/image?url=";
 
 // Fonction pour récupérer les véhicules électriques
 async function fetchVehicles() {
@@ -97,7 +98,9 @@ async function fetchVehicles() {
   vehicleContainer.innerHTML = "<p>Chargement des véhicules...</p>";
 
   try {
-    const response = await fetch("http://localhost:3001/api/vehicles");
+    const response = await fetch(
+      "https://electrictravel.azurewebsites.net/api/vehicles"
+    );
     const vehicles = await response.json();
 
     if (!vehicles.length) {
