@@ -31,7 +31,9 @@
           placeholder="Ex : Lyon"
           required
         />
-        <button type="button"><i class="fa-solid fa-rotate"></i></button>
+        <button id="swapCitiesButton" type="button">
+          <i class="fa-solid fa-rotate"></i>
+        </button>
         <input
           type="text"
           id="endCity"
@@ -47,6 +49,19 @@
       <!-- Conteneur des véhicules électriques -->
       <div id="vehicleContainer">
         <ul id="vehicleList" class="vehicle-list"></ul>
+      </div>
+
+      <div id="distanceContainer">
+        <!-- Ajoutez cet élément dans votre fichier HTML, par exemple dans le body -->
+        <p id="distanceDisplay">
+          <i class="fa-solid fa-road"></i> Distance totale : 0 km
+        </p>
+        <p id="timeDisplay">
+          <i class="fa-solid fa-clock"></i> Temps total : 0 h
+        </p>
+        <p id="costDisplay">
+          <i class="fa-solid fa-euro-sign"></i> Coût total : 0 €
+        </p>
       </div>
 
       <!-- Carte Leaflet -->

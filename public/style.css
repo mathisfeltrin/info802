@@ -58,13 +58,6 @@ main {
   height: 50vh; /* Hauteur fixe */
   width: 30%; /* Largeur ajustée */
   background-color: white;
-  /* background: rgb(131, 58, 180);
-  background: linear-gradient(
-    45deg,
-    rgba(131, 58, 180, 1) 0%,
-    rgba(253, 29, 29, 1) 50%,
-    rgba(252, 176, 69, 1) 100%
-  ); */
   border-radius: 16px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   padding: 10px;
@@ -92,7 +85,7 @@ main {
 }
 
 .vehicle-item:hover {
-  border: 3px solid #0072ff; /* Bordure bleue */
+  background: #0073ff8e;
 }
 
 .vehicle-item:last-child {
@@ -114,6 +107,40 @@ main {
 .selected-vehicle {
   border: 3px solid #0072ff; /* Bordure bleue */
   box-shadow: 0px 0px 10px rgba(0, 114, 255, 0.5); /* Glow effect */
+}
+
+/* Style pour le conteneur de distance */
+#distanceContainer {
+  display: flex;
+  flex-direction: column; /* S'assurer que les éléments sont empilés verticalement */
+  align-items: flex-start; /* Alignement des éléments au début */
+  justify-content: flex-start; /* Pas d'espacement entre les éléments */
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  height: auto; /* Hauteur fixe */
+  width: 20%; /* Largeur ajustée */
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  z-index: 1000;
+  overflow-y: auto; /* Permet le défilement vertical */
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+/* Style pour les paragraphes à l'intérieur du conteneur de distance */
+#distanceContainer p {
+  margin: 8px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Style pour les icônes FontAwesome */
+#distanceContainer i {
+  margin-right: 8px;
+  color: #007bff;
 }
 
 /* Réduction de la taille des champs et alignement */

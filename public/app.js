@@ -1,10 +1,30 @@
 document.addEventListener("DOMContentLoaded", () => {
   initMap();
   fetchVehicles();
+
+  // Ajouter un gestionnaire d'événement pour le bouton d'échange des villes
+  document
+    .getElementById("swapCitiesButton")
+    .addEventListener("click", swapCities);
 });
 
 let autonomy = 300; // Autonomie par défaut
 let map;
+
+// Fonction pour calculer la distance entre deux points (latitude, longitude) en utilisant la formule de Haversine
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Rayon de la Terre en km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance en km
+}
 
 // 🗺️ Initialisation de la carte Leaflet
 function initMap() {
@@ -15,6 +35,16 @@ function initMap() {
   }).addTo(map);
 
   document.getElementById("routeForm").addEventListener("submit", fetchRoute);
+}
+
+// Fonction pour échanger les villes de départ et d'arrivée
+function swapCities() {
+  const startCityInput = document.getElementById("startCity");
+  const endCityInput = document.getElementById("endCity");
+
+  const temp = startCityInput.value;
+  startCityInput.value = endCityInput.value;
+  endCityInput.value = temp;
 }
 
 // document
@@ -170,6 +200,32 @@ function updateMap(
 
   // Ajuster la carte à l'itinéraire
   map.fitBounds(routeLayer.getBounds());
+
+  // Calculer la distance totale du trajet
+  let totalDistance = 0;
+  for (let i = 1; i < route.length; i++) {
+    totalDistance += haversine(
+      route[i - 1][1],
+      route[i - 1][0],
+      route[i][1],
+      route[i][0]
+    );
+  }
+
+  // Afficher la distance totale sur la page
+  const distanceDisplay = document.getElementById("distanceDisplay");
+  const distanceHTML = `<i class="fa-solid fa-road"></i> Distance totale : ${totalDistance.toFixed(
+    2
+  )} km`;
+
+  if (distanceDisplay) {
+    distanceDisplay.innerHTML = distanceHTML;
+  } else {
+    const distanceElement = document.createElement("p");
+    distanceElement.id = "distanceDisplay";
+    distanceElement.innerHTML = distanceHTML;
+    document.body.appendChild(distanceElement);
+  }
 }
 
 // 🚗 Récupérer et afficher les véhicules électriques
