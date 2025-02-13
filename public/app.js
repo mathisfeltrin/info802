@@ -17,6 +17,17 @@ function initMap() {
   document.getElementById("routeForm").addEventListener("submit", fetchRoute);
 }
 
+// document
+//   .getElementById("calculateTravelTimeBtn")
+//   .addEventListener("click", () => {
+//     const distance = 500; // À récupérer dynamiquement
+//     const vehicleAutonomy = autonomy; // Prend l'autonomie du véhicule sélectionné
+//     const chargingTime = 1; // Exemple : 1 heure par recharge
+//     const averageSpeed = 100; // Exemple : 100 km/h
+
+//     fetchTravelTime(distance, vehicleAutonomy, chargingTime, averageSpeed);
+//   });
+
 // 🔍 Récupérer et afficher l'itinéraire en passant par toutes les bornes
 async function fetchRoute(event) {
   event.preventDefault();
@@ -240,3 +251,41 @@ function updateAutonomy(vehicle, listItem) {
   listItem.classList.add("selected-vehicle");
   selectedVehicleElement = listItem;
 }
+
+// async function fetchTravelTime(
+//   distance,
+//   vehicleAutonomy,
+//   chargingTime,
+//   averageSpeed
+// ) {
+//   try {
+//     const response = await fetch(
+//       "http://localhost:3000/api/soap/calculate-travel-time",
+//       {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({
+//           distance,
+//           vehicleAutonomy,
+//           chargingTime,
+//           averageSpeed,
+//         }),
+//       }
+//     );
+
+//     if (!response.ok) {
+//       throw new Error("Erreur lors de la récupération du temps de trajet.");
+//     }
+
+//     const data = await response.json();
+//     console.log("Temps de trajet:", data.travelTime);
+
+//     // 🎯 Mettre à jour l'affichage dans la page
+//     document.getElementById(
+//       "travelTimeDisplay"
+//     ).textContent = `Temps total : ${data.travelTime.toFixed(2)} heures`;
+//   } catch (error) {
+//     console.error("❌ Erreur:", error);
+//     alert("Erreur lors du calcul du temps de trajet.");
+//   }
+// }
