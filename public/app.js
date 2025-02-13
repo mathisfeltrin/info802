@@ -184,6 +184,9 @@ async function fetchVehicles() {
   }
 }
 
+// Variable globale pour suivre l'élément sélectionné
+let selectedVehicleElement = null;
+
 // 🚘 Afficher la liste des véhicules
 function displayVehicleList(vehicles) {
   const vehicleContainer = document.getElementById("vehicleList");
@@ -198,30 +201,42 @@ function displayVehicleList(vehicles) {
     listItem.classList.add("vehicle-item");
 
     listItem.innerHTML = `
-          <img src="${imageUrl}" alt="${
+            <img src="${imageUrl}" alt="${
       vehicle.naming.model
     }" class="vehicle-image">
-          <div class="vehicle-details">
-              <strong>${vehicle.naming.make} ${
+            <div class="vehicle-details">
+                <strong>${vehicle.naming.make} ${
       vehicle.naming.model
     }</strong><br>
-              Version : ${vehicle.naming.chargetrip_version || "N/A"}<br>
-              Autonomie (km) : ${
-                vehicle.range.chargetrip_range.worst || "N/A"
-              }<br>
-              Temps de charge : ${vehicle.connectors[0]?.time || "N/A"} min
-          </div>
-      `;
+                Version : ${vehicle.naming.chargetrip_version || "N/A"}<br>
+                Autonomie (km) : ${
+                  vehicle.range.chargetrip_range.worst || "N/A"
+                }<br>
+                Temps de charge : ${vehicle.connectors[0]?.time || "N/A"} min
+            </div>
+        `;
 
-    listItem.addEventListener("click", () => updateAutonomy(vehicle));
+    // 🎯 Ajouter un événement au clic
+    listItem.addEventListener("click", () => {
+      updateAutonomy(vehicle, listItem);
+    });
 
     vehicleContainer.appendChild(listItem);
   });
 }
 
-// ⚡ Mettre à jour l'autonomie selon le véhicule sélectionné
-function updateAutonomy(vehicle) {
+// ⚡ Mettre à jour l'autonomie et le visuel du véhicule sélectionné
+function updateAutonomy(vehicle, listItem) {
   console.log("Autonomie avant :", autonomy);
   autonomy = vehicle.range.chargetrip_range.worst;
   console.log("Autonomie après :", autonomy);
+
+  // 🔥 Réinitialiser l'ancien véhicule sélectionné
+  if (selectedVehicleElement) {
+    selectedVehicleElement.classList.remove("selected-vehicle");
+  }
+
+  // 🎯 Ajouter la classe au nouvel élément sélectionné
+  listItem.classList.add("selected-vehicle");
+  selectedVehicleElement = listItem;
 }
