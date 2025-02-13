@@ -17,7 +17,7 @@ function initMap() {
   document.getElementById("routeForm").addEventListener("submit", fetchRoute);
 }
 
-// 🔍 Récupérer et afficher l'itinéraire
+// 🔍 Récupérer et afficher l'itinéraire en passant par toutes les bornes
 async function fetchRoute(event) {
   event.preventDefault();
 
@@ -34,22 +34,88 @@ async function fetchRoute(event) {
     if (!response.ok)
       throw new Error("Erreur lors de la récupération de l'itinéraire.");
 
-    const { route, startCoords, endCoords, chargingStations } =
+    let { route, startCoords, endCoords, chargingStations } =
       await response.json();
-    updateMap(
-      route,
-      startCoords,
-      endCoords,
-      chargingStations,
-      startCity,
-      endCity
-    );
+
+    if (chargingStations.length > 1) {
+      chargingStations.shift(); // Supprime la première borne
+    }
+
+    if (chargingStations.length > 0) {
+      console.log("📍 Bornes sélectionnées :", chargingStations);
+      const fullRoute = await getMultiSegmentRoute(
+        startCoords,
+        endCoords,
+        chargingStations
+      );
+      updateMap(
+        fullRoute,
+        startCoords,
+        endCoords,
+        chargingStations,
+        startCity,
+        endCity
+      );
+    } else {
+      console.warn(
+        "Aucune borne trouvée sur le trajet, affichage du trajet direct."
+      );
+      updateMap(route, startCoords, endCoords, [], startCity, endCity);
+    }
   } catch (error) {
     alert(`Erreur : ${error.message}`);
   }
 }
 
-// 📍 Mise à jour de la carte avec itinéraire et bornes
+// 🗺️ Fonction pour générer l’itinéraire en passant par toutes les bornes
+async function getMultiSegmentRoute(startCoords, endCoords, chargingStations) {
+  const fullRoute = [];
+  let previousPoint = startCoords;
+
+  for (const station of chargingStations) {
+    const stationCoords = [station.coordonnees[1], station.coordonnees[0]]; // Leaflet utilise [lat, lon]
+    const segmentRoute = await fetchSegmentRoute(previousPoint, stationCoords);
+
+    if (segmentRoute.length > 0) {
+      fullRoute.push(...segmentRoute);
+    }
+    previousPoint = stationCoords;
+  }
+
+  // Dernière portion entre la dernière borne et l’arrivée
+  const finalSegment = await fetchSegmentRoute(previousPoint, endCoords);
+  if (finalSegment.length > 0) {
+    fullRoute.push(...finalSegment);
+  }
+
+  return fullRoute;
+}
+
+// 🌍 Fonction pour récupérer l’itinéraire entre deux points
+async function fetchSegmentRoute(start, end) {
+  try {
+    const response = await fetch(
+      `https://electrictravel.azurewebsites.net/api/proxy-route?start=${start.join(
+        ","
+      )}&end=${end.join(",")}`
+    );
+    if (!response.ok)
+      throw new Error(
+        "Erreur lors de la récupération d’un segment d’itinéraire."
+      );
+
+    const data = await response.json();
+    return data.features[0]?.geometry?.coordinates || [];
+  } catch (error) {
+    console.error(
+      "❌ Erreur lors de la récupération d’un segment d’itinéraire :",
+      error
+    );
+    return [];
+  }
+}
+
+// 📍 Mise à jour de la carte avec un itinéraire passant par les bornes
 function updateMap(
   route,
   startCoords,
@@ -58,14 +124,14 @@ function updateMap(
   startCity,
   endCity
 ) {
-  // Supprimer toutes les anciennes couches sauf le fond de carte
+  // Nettoyage des anciennes couches sauf le fond de carte
   map.eachLayer((layer) => {
     if (!layer._url) map.removeLayer(layer);
   });
 
-  // Afficher l'itinéraire
-  const routeLayer = L.geoJSON(
-    { type: "LineString", coordinates: route },
+  // Affichage du trajet avec toutes les bornes
+  const routeLayer = L.polyline(
+    route.map((coord) => [coord[1], coord[0]]),
     { color: "blue" }
   ).addTo(map);
 
@@ -79,24 +145,19 @@ function updateMap(
 
   // Ajouter les bornes de recharge
   chargingStations.forEach((station, index) => {
-    if (index !== 0) {
-      console.log(
-        `📌 Borne ${index} : ${station.nom} - Coordonnées : ${station.coordonnees}`
-      );
-      const [lat, lon] = station.coordonnees;
+    const [lat, lon] = station.coordonnees;
 
-      L.marker([lat, lon], {
-        icon: L.icon({
-          iconUrl: "assets/charging-station.png",
-          iconSize: [32, 32],
-        }),
-      })
-        .addTo(map)
-        .bindPopup(`<b>${station.nom}</b><br>${station.adresse}`);
-    }
+    L.marker([lat, lon], {
+      icon: L.icon({
+        iconUrl: "assets/charging-station.png",
+        iconSize: [32, 32],
+      }),
+    })
+      .addTo(map)
+      .bindPopup(`<b>${station.nom}</b><br>${station.adresse}`);
   });
 
-  // Ajuster la vue sur l'itinéraire
+  // Ajuster la carte à l'itinéraire
   map.fitBounds(routeLayer.getBounds());
 }
 
