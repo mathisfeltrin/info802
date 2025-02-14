@@ -30,17 +30,35 @@ Cette API permet de gérer les stations de recharge, les itinéraires et les vé
    npm install
    ```
 
-3. **Créer un fichier `.env`** et ajouter la clé API OpenRouteService :
+3. **Créer un fichier `.env`** avec les variables suivantes :
 
    ```sh
-   echo "OPENROUTE_API_KEY=your_api_key_here" > .env
+   # Configuration du serveur
+   PORT=3001
    ```
+
+# API IRVE (Bornes de recharge)
+
+IRVE_API_URL =
+
+# OpenStreetMap (exemple pour l'utilisation de Nominatim)
+
+OSM_API_URL =
+OPENROUTE_API_KEY =
+
+# API ChargeTrip
+
+CHARGETRIP_API_URL =
+CHARGETRIP_CLIENT_ID =
+CHARGETRIP_APP_ID =
+
+````
 
 4. **Lancer l'API en mode développement** :
 
-   ```sh
-   npm run dev
-   ```
+```sh
+npm run dev
+````
 
 5. **Lancer en mode production** :
    ```sh
