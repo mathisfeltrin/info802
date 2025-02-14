@@ -51,15 +51,15 @@ Cette API permet de gérer les stations de recharge, les itinéraires et les vé
 
 4. **Lancer l'API en mode développement** :
 
-```sh
-npm run dev
-```
+   ```sh
+   npm run dev
+   ```
 
 5. **Lancer en mode production** :
 
-```sh
-npm start
-```
+   ```sh
+   npm start
+   ```
 
 ---
 
