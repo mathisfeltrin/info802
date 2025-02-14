@@ -56,9 +56,10 @@ npm run dev
 ```
 
 5. **Lancer en mode production** :
-   ```sh
-   npm start
-   ```
+
+```sh
+npm start
+```
 
 ---
 
