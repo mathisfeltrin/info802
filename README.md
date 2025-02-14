@@ -8,6 +8,10 @@
 
 Cette API permet de gérer les stations de recharge, les itinéraires et les véhicules électriques. Elle fournit des endpoints pour récupérer les stations, les trajets et les véhicules disponibles ainsi qu'un proxy pour interroger l'API OpenRouteService.
 
+## Lien Vers le site
+
+https://electrictravel.azurewebsites.net/
+
 ## 🏗️ Installation
 
 ### Prérequis
