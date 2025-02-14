@@ -5,32 +5,39 @@
 ![License](https://img.shields.io/badge/License-ISC-blue)
 
 ## 📌 Description
-Cette API permet de gérer les stations de recharge et les véhicules électriques. Elle fournit des endpoints pour récupérer les stations, les trajets et les véhicules disponibles.
+
+Cette API permet de gérer les stations de recharge, les itinéraires et les véhicules électriques. Elle fournit des endpoints pour récupérer les stations, les trajets et les véhicules disponibles ainsi qu'un proxy pour interroger l'API OpenRouteService.
 
 ## 🏗️ Installation
 
 ### Prérequis
+
 - **Node.js** (v18.x recommandé)
-- **npm** ou **yarn**
+- **npm**
 
 ### Étapes d'installation
+
 1. **Cloner le projet** :
+
    ```sh
    git clone https://github.com/mathisfeltrin/info802.git
    cd info802
    ```
 
 2. **Installer les dépendances** :
+
    ```sh
    npm install
    ```
 
-3. **Créer un fichier `.env`** (si nécessaire) :
+3. **Créer un fichier `.env`** et ajouter la clé API OpenRouteService :
+
    ```sh
-   touch .env
+   echo "OPENROUTE_API_KEY=your_api_key_here" > .env
    ```
 
 4. **Lancer l'API en mode développement** :
+
    ```sh
    npm run dev
    ```
@@ -43,35 +50,41 @@ Cette API permet de gérer les stations de recharge et les véhicules électriqu
 ---
 
 ## 🛠️ Technologies Utilisées
+
 - [Node.js](https://nodejs.org/)
 - [Express.js](https://expressjs.com/)
 - [Axios](https://axios-http.com/)
 - [Cors](https://www.npmjs.com/package/cors)
 - [Dotenv](https://www.npmjs.com/package/dotenv)
-- [Nodemon](https://www.npmjs.com/package/nodemon) *(pour le développement)*
+- [OpenRouteService API](https://openrouteservice.org/)
 
 ---
 
 ## 📡 Endpoints de l'API
 
 ### 🚉 **Stations**
-| Méthode | Endpoint        | Description |
-|---------|----------------|-------------|
-| **GET** | `/stations`    | Récupérer toutes les stations |
+
+| Méthode | Endpoint        | Description                   |
+| ------- | --------------- | ----------------------------- |
+| **GET** | `/api/stations` | Récupérer toutes les stations |
 
 ### 🚗 **Véhicules**
-| Méthode | Endpoint        | Description |
-|---------|----------------|-------------|
-| **GET** | `/vehicles`    | Récupérer la liste des véhicules |
 
-### 🛣 **Routes**
-| Méthode | Endpoint      | Description |
-|---------|--------------|-------------|
-| **GET** | `/routes`    | Obtenir les trajets disponibles |
+| Méthode | Endpoint        | Description                      |
+| ------- | --------------- | -------------------------------- |
+| **GET** | `/api/vehicles` | Récupérer la liste des véhicules |
+
+### 🛣 **Itinéraires**
+
+| Méthode | Endpoint                                     | Description                                   |
+| ------- | -------------------------------------------- | --------------------------------------------- |
+| **GET** | `/api/map`                                   | Récupérer des cartes                          |
+| **GET** | `/api/proxy-route?start=lon,lat&end=lon,lat` | Obtenir un itinéraire depuis OpenRouteService |
 
 ---
 
 ## 🏗️ Architecture du Projet
+
 ```
 .
 ├── index.js
@@ -81,7 +94,7 @@ Cette API permet de gérer les stations de recharge et les véhicules électriqu
 │   ├── index.html
 │   └── style.css
 ├── routes
-│   ├── route.js
+│   ├── map.js
 │   ├── stations.js
 │   └── vehicles.js
 ├── services
@@ -90,10 +103,11 @@ Cette API permet de gérer les stations de recharge et les véhicules électriqu
 │   └── stationsService.js
 └── utils
     ├── env.js
-    └── haversine.js
+    ├── haversine.js
 ```
 
 ### 📜 Explication des Dossiers
+
 - **routes/** → Contient les routes de l’API.
 - **services/** → Contient la logique métier et les appels aux données.
 - **utils/** → Fonctions utilitaires comme le calcul de distance avec `haversine.js`.
@@ -104,16 +118,23 @@ Cette API permet de gérer les stations de recharge et les véhicules électriqu
 ## ⚡ Exemples d'Utilisation avec Postman
 
 ### 🔹 Récupérer la liste des véhicules
+
 ```sh
-curl -X GET http://localhost:3000/vehicles
+curl -X GET https://electrictravel.azurewebsites.net/api/vehicles
+```
+
+### 🔹 Récupérer un itinéraire entre deux points
+
+```sh
+curl -X GET "https://electrictravel.azurewebsites.net/api/proxy-route?start=2.3522,48.8566&end=4.8357,45.7640"
 ```
 
 ---
 
 ## 📄 Licence
+
 Ce projet est sous licence **ISC**.
 
 ---
 
-🚀 *Développé avec ❤️ en Node.js et Express.js*
-
+🚀 _Développé avec ❤️ en Node.js et Express.js_
